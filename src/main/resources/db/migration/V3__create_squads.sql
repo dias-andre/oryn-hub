@@ -15,4 +15,4 @@ CREATE TABLE squad_members (
     FOREIGN KEY(squad_id) REFERENCES squads(id)
 );
 
-ALTER TABLE users DROP TABLE role;
+ALTER TABLE users DROP COLUMN role;
