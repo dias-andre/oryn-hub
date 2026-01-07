@@ -1,5 +1,6 @@
 package com.httpsdre.ragnarok.application;
 
+import com.fasterxml.uuid.Generators;
 import com.httpsdre.ragnarok.dtos.GetCurrentUserRequest;
 import com.httpsdre.ragnarok.dtos.user.LoginResponse;
 import com.httpsdre.ragnarok.dtos.user.UserSummaryDTO;
@@ -30,6 +31,7 @@ public class UserService {
     try {
       discordUser = this.discord.getCurrentUser(token);
     } catch (Exception _) {
+      System.out.println("Usuário do discord não encontrado.");
       throw new UnauthorizedException("Discord user not found!");
     }
 
@@ -46,6 +48,7 @@ public class UserService {
     user.setEmail(discordUser.email());
     user.setDisplayName(discordUser.global_name());
     user.setUsername(discordUser.username());
+    user.setLastLogin(LocalDateTime.now());
 
     user = this.userRepository.save(user);
 

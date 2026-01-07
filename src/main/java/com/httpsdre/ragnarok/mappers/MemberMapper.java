@@ -6,6 +6,8 @@ import com.httpsdre.ragnarok.models.Member;
 public class MemberMapper {
   public static MemberSummaryDTO
     toSummary(Member model) {
+    if(model == null) return null;
+
     return MemberSummaryDTO.builder()
             .id(model.getUser().getId().toString())
             .discordId(model.getUser().getDiscordId())
