@@ -1,3 +1,14 @@
 spring:
   application:
     name: Ragnarok
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  flyway:
+    fail-on-missing-locations: true
+
+logging:
+  level:
+    org:
+      flywaydb: DEBUG
