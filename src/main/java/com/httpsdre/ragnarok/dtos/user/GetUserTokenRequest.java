@@ -1,4 +1,4 @@
-package com.httpsdre.ragnarok.dtos;
+package com.httpsdre.ragnarok.dtos.user;
 
 import jakarta.validation.constraints.NotBlank;
 

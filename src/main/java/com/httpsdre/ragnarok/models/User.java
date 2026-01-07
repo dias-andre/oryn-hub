@@ -1,7 +1,6 @@
 package com.httpsdre.ragnarok.models;
 
 import com.fasterxml.uuid.Generators;
-import com.httpsdre.ragnarok.types.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,21 +29,21 @@ public class User {
   private String email;
   private String avatar;
 
-  @Enumerated(EnumType.STRING)
-  private UserRole role;
   private boolean isActive;
   @Column(updatable = false)
   private LocalDateTime createdAt;
   private LocalDateTime lastLogin;
 
-  public User(String discordId, String displayName, String username, String email, String avatar, UserRole role, boolean isActive, LocalDateTime createdAt, LocalDateTime lastLogin) {
+  @OneToMany(mappedBy = "user")
+  private List<Member> members;
+
+  public User(String discordId, String displayName, String username, String email, String avatar, boolean isActive, LocalDateTime createdAt, LocalDateTime lastLogin) {
     this.id = Generators.timeBasedEpochGenerator().generate();
     this.discordId = discordId;
     this.displayName = displayName;
     this.username = username;
     this.email = email;
     this.avatar = avatar;
-    this.role = role;
     this.isActive = isActive;
     this.createdAt = createdAt;
     this.lastLogin = lastLogin;

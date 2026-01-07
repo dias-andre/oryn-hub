@@ -1,6 +1,4 @@
-package com.httpsdre.ragnarok.dtos;
-
-import com.httpsdre.ragnarok.types.UserRole;
+package com.httpsdre.ragnarok.dtos.user;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +9,6 @@ public record UserDetailsDTO(
         String username,
         String email,
         String avatar,
-        UserRole role,
         boolean isActive,
         LocalDateTime createdAt,
         LocalDateTime lastLogin
