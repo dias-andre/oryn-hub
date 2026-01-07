@@ -1,5 +1,6 @@
 package com.httpsdre.ragnarok.models;
 
+import com.fasterxml.uuid.Generators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,13 @@ public class Squad {
   private UUID id;
 
   private String name;
-  @OneToMany(mappedBy = "squad")
+  @OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Member> members;
+
+  @PrePersist
+  protected void prepare() {
+    if(this.id == null) {
+      this.id = Generators.timeBasedEpochGenerator().generate();
+    }
+  }
 }
