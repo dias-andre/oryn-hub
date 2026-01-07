@@ -1,6 +1,6 @@
 package com.httpsdre.ragnarok.types;
 
-public enum UserRole {
+public enum SquadRole {
   USER,
   ADMIN,
   MODERATOR

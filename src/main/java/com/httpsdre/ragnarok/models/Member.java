@@ -1,6 +1,6 @@
 package com.httpsdre.ragnarok.models;
 
-import com.httpsdre.ragnarok.types.UserRole;
+import com.httpsdre.ragnarok.types.SquadRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class Member {
   private Squad squad;
 
   @Enumerated(EnumType.STRING)
-  private UserRole role;
+  private SquadRole role;
 
   @Column(updatable = false)
   private LocalDateTime joinedAt;
