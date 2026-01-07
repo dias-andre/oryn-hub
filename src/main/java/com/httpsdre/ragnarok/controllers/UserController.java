@@ -19,12 +19,13 @@ public class UserController {
 
   @PostMapping("/discord/auth")
   public ResponseEntity<LoginResponse>
-    authUser(@Valid @RequestBody GetUserTokenRequest body) {
-    return ResponseEntity.ok(this.userService.authAndCreateUser(body.token()));
+  authUser(@Valid @RequestBody GetUserTokenRequest body) {
+    var result = this.userService.authAndCreateUser(body.token());
+    return ResponseEntity.ok(result);
   }
 
   @GetMapping("/@me")
   public ResponseEntity<UserSummaryDTO> me(@AuthenticationPrincipal User user) {
-
+    return ResponseEntity.ok(this.userService.toSummary(user));
   }
 }
