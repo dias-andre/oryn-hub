@@ -2,7 +2,7 @@ package com.httpsdre.ragnarok.application;
 
 import com.httpsdre.ragnarok.dtos.GetCurrentUserRequest;
 import com.httpsdre.ragnarok.dtos.user.LoginResponse;
-import com.httpsdre.ragnarok.dtos.user.UserDetailsDTO;
+import com.httpsdre.ragnarok.dtos.user.UserSummaryDTO;
 import com.httpsdre.ragnarok.exceptions.NotFoundException;
 import com.httpsdre.ragnarok.exceptions.UnauthorizedException;
 import com.httpsdre.ragnarok.mappers.UserMapper;
@@ -50,12 +50,16 @@ public class UserService {
     user = this.userRepository.save(user);
 
     String jwt = this.tokenService.generateUserToken(user);
-    return new LoginResponse(jwt, UserMapper.fromModel(user));
+    return new LoginResponse(jwt, UserMapper.toSummary(user));
   }
 
-  public UserDetailsDTO getUserById(UUID id) {
+  public UserSummaryDTO getUserById(UUID id) {
     User user = this.userRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("User not found"));
-    return UserMapper.fromModel(user);
+    return UserMapper.toSummary(user);
+  }
+
+  public UserSummaryDTO toSummary(User user) {
+    return UserMapper.toSummary(user);
   }
 }

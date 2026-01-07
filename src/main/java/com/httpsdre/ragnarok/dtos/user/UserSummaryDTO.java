@@ -2,7 +2,7 @@ package com.httpsdre.ragnarok.dtos.user;
 
 import java.time.LocalDateTime;
 
-public record UserDetailsDTO(
+public record UserSummaryDTO(
         String id,
         String discordId,
         String displayName,
