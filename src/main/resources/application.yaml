@@ -12,3 +12,8 @@ logging:
   level:
     org:
       flywaydb: DEBUG
+
+api:
+  security:
+    token:
+      secret: minha-chave-secreta-super-poderosa-ragnarok-123
