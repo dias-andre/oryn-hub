@@ -13,6 +13,10 @@ logging:
     org:
       flywaydb: DEBUG
 
+springdoc:
+  swagger-ui:
+    path: /docs
+
 api:
   security:
     token:
