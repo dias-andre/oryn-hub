@@ -3,10 +3,10 @@ package com.httpsdre.ragnarok.application;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.httpsdre.ragnarok.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -22,8 +22,7 @@ public class TokenService {
       Algorithm algorithm = Algorithm.HMAC256(secret);
       return JWT.create()
               .withIssuer("ragnarok-api")
-              .withSubject(user.getDiscordId())
-              .withClaim("role", user.getRole().name())
+              .withSubject(user.getId().toString())
               .withExpiresAt(this.genExpirationDate())
               .sign(algorithm);
     } catch (JWTCreationException e) {
@@ -31,7 +30,22 @@ public class TokenService {
     }
   }
 
-  private Instant genExpirationDate(){
+  private Instant genExpirationDate() {
     return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+  }
+
+  public String validateToken(String token) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(secret);
+      return JWT.require(algorithm)
+              .withIssuer("ragnarok-api") // Valida se foi você mesmo que emitiu
+              .build()
+              .verify(token) // Decodifica
+              .getSubject(); // Pega o ID que você salvou lá dentro
+    } catch (JWTVerificationException exception) {
+      // Se o token for inválido, expirado ou adulterado, cai aqui.
+      // Retornamos vazio para o SecurityFilter saber que falhou.
+      return null;
+    }
   }
 }
