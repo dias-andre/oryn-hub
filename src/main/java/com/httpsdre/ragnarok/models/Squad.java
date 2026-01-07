@@ -21,6 +21,7 @@ public class Squad {
   private UUID id;
 
   private String name;
+  private String icon;
   @OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Member> members;
 

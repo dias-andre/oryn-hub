@@ -8,6 +8,7 @@ public class SquadMapper {
     return SquadSummaryDTO.builder()
             .id(model.getId().toString())
             .name(model.getName())
+            .icon(model.getIcon())
             .build();
   }
 }
