@@ -40,6 +40,16 @@ public class SquadController {
   }
 
   @PreAuthorize("@securityService.isMemberOf(#squadId, principal.id)")
+  @GetMapping("/{squadId}/members/{userId}/invites")
+  public ResponseEntity<List<InviteSummaryDTO>> getSquadMemberInvites(
+          @PathVariable UUID squadId,
+          @PathVariable UUID userId
+  ) {
+    var invitesData = this.inviteService.getSquadMemberInvites(squadId, userId);
+    return ResponseEntity.ok(invitesData);
+  }
+
+  @PreAuthorize("@securityService.isMemberOf(#squadId, principal.id)")
   @PostMapping("/{squadId}/invites")
   public ResponseEntity<InviteSummaryDTO>
     createInvite(@PathVariable UUID squadId, @RequestBody CreateInviteRequest body,

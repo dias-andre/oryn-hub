@@ -2,16 +2,12 @@ package com.httpsdre.ragnarok.application;
 
 import com.httpsdre.ragnarok.dtos.invite.InviteSummaryDTO;
 import com.httpsdre.ragnarok.dtos.member.InviteAuthorDTO;
-import com.httpsdre.ragnarok.dtos.member.MemberSummaryDTO;
 import com.httpsdre.ragnarok.exceptions.NotFoundException;
-import com.httpsdre.ragnarok.exceptions.UnprocessableEntityException;
 import com.httpsdre.ragnarok.mappers.InviteMapper;
-import com.httpsdre.ragnarok.mappers.MemberMapper;
 import com.httpsdre.ragnarok.models.*;
 import com.httpsdre.ragnarok.repositories.InviteRepository;
 import com.httpsdre.ragnarok.repositories.MemberRepository;
 import com.httpsdre.ragnarok.repositories.SquadRepository;
-import com.httpsdre.ragnarok.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,14 +43,26 @@ public class InviteService {
                       new InviteAuthorDTO(author.getId(), author.getDisplayName(),
                               author.getUsername(), author.getAvatar())
               );
-    }).toList();
+            }).toList();
+  }
+
+  public List<InviteSummaryDTO> getSquadMemberInvites(UUID squadId, UUID userId) {
+    List<Invite> invites = this.inviteRepository.filterByUserAndSquadId(userId, squadId);
+    return invites.stream()
+            .map(i -> {
+              User author = i.getAuthor();
+              return InviteMapper.toSummary(i,
+                      new InviteAuthorDTO(author.getId(), author.getDisplayName(),
+                              author.getUsername(), author.getAvatar())
+              );
+            }).toList();
   }
 
   @Transactional
   public void updateInvitePause(UUID inviteId, boolean newValue) {
     Invite invite = this.inviteRepository.findById(inviteId)
             .orElseThrow(() -> new NotFoundException("Invite with id " + inviteId.toString() + " not found!"));
-    if(newValue) {
+    if (newValue) {
       invite.pause();
     }
     invite.unPause();

@@ -13,6 +13,16 @@ public interface InviteRepository extends JpaRepository<Invite, UUID> {
     JOIN FETCH i.author
     JOIN FETCH i.squad
     WHERE i.squad.id = :squadId
+    ORDER BY i.id ASC
     """)
   List<Invite> findAllWithDetails(UUID squadId);
+
+  @Query("""
+    SELECT i FROM Invite i
+    JOIN FETCH i.author
+    JOIN FETCH i.squad
+    WHERE i.author.id = :userId AND i.squad.id = :squadId
+    ORDER BY i.id ASC
+    """)
+  List<Invite> filterByUserAndSquadId(UUID userId, UUID squadId);
 }
