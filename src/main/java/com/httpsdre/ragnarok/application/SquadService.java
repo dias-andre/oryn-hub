@@ -12,7 +12,6 @@ import com.httpsdre.ragnarok.models.Squad;
 import com.httpsdre.ragnarok.models.User;
 import com.httpsdre.ragnarok.repositories.MemberRepository;
 import com.httpsdre.ragnarok.repositories.SquadRepository;
-import com.httpsdre.ragnarok.repositories.UserRepository;
 import com.httpsdre.ragnarok.types.SquadRole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class SquadService {
-  private final UserRepository userRepository;
   private final SquadRepository squadRepository;
   private final MemberRepository memberRepository;
 
