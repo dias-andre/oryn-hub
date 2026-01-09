@@ -51,14 +51,6 @@ public class Invite {
     }
   }
 
-  public void pause() {
-    this.isPaused = true;
-  }
-
-  public void unPause() {
-    this.isPaused = false;
-  }
-
   private String generateRandomCode() {
     String ALPHA_NUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     SecureRandom RANDOM = new SecureRandom();
