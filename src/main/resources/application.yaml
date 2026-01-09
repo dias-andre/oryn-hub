@@ -20,4 +20,4 @@ springdoc:
 api:
   security:
     token:
-      secret: minha-chave-secreta-super-poderosa-ragnarok-123
+      secret: ${JWT_SECRET}
