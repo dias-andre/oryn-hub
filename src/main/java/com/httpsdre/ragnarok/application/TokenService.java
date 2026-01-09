@@ -31,21 +31,21 @@ public class TokenService {
   }
 
   private Instant genExpirationDate() {
-    return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    return LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.of("-03:00"));
   }
 
   public String validateToken(String token) {
     try {
       Algorithm algorithm = Algorithm.HMAC256(secret);
       return JWT.require(algorithm)
-              .withIssuer("ragnarok-api") // Valida se foi você mesmo que emitiu
+              .withIssuer("ragnarok-api")
               .build()
-              .verify(token) // Decodifica
-              .getSubject(); // Pega o ID que você salvou lá dentro
+              .verify(token)
+              .getSubject();
     } catch (JWTVerificationException exception) {
       // Se o token for inválido, expirado ou adulterado, cai aqui.
       // Retornamos vazio para o SecurityFilter saber que falhou.
-      return null;
+      return "";
     }
   }
 }
