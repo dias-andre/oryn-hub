@@ -3,7 +3,7 @@ package com.httpsdre.ragnarok.dtos.member;
 import com.httpsdre.ragnarok.types.SquadRole;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Builder
 public record MemberSummaryDTO(
@@ -12,6 +12,6 @@ public record MemberSummaryDTO(
         String displayName,
         String username,
         SquadRole role,
-        LocalDateTime joinedAt
+        OffsetDateTime joinedAt
 ) {
 }

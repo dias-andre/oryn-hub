@@ -2,10 +2,10 @@ package com.httpsdre.ragnarok.dtos.invite;
 
 import jakarta.validation.constraints.Min;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record CreateInviteRequest(
         @Min(0) Integer usageLimit,
-        LocalDateTime expiresAt
+        OffsetDateTime expiresAt
 ) {
 }

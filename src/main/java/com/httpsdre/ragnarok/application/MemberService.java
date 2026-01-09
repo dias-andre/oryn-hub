@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Service
@@ -29,7 +29,7 @@ public class MemberService {
     Member newMember = new Member();
     newMember.setSquad(squad);
     newMember.setUser(user);
-    newMember.setJoinedAt(LocalDateTime.now());
+    newMember.setJoinedAt(OffsetDateTime.now());
     newMember.setRole(SquadRole.USER);
     newMember = this.memberRepository.save(newMember);
     return MemberMapper.toSummary(newMember);
@@ -41,7 +41,7 @@ public class MemberService {
     Member newMember = new Member();
     newMember.setSquad(squadProxy);
     newMember.setUser(user);
-    newMember.setJoinedAt(LocalDateTime.now());
+    newMember.setJoinedAt(OffsetDateTime.now());
     newMember.setRole(SquadRole.USER);
     newMember = this.memberRepository.save(newMember);
     return MemberMapper.toSummary(newMember);

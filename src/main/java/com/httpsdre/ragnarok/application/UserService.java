@@ -14,7 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 
@@ -38,7 +38,7 @@ public class UserService {
     User user = this.userRepository.findByDiscordId(discordUser.id()).orElseGet(() -> {
       User newUser = new User();
       newUser.setDiscordId(discordUser.id());
-      newUser.setCreatedAt(LocalDateTime.now());
+      newUser.setCreatedAt(OffsetDateTime.now());
       newUser.setActive(true);
       return newUser;
     });
@@ -48,7 +48,7 @@ public class UserService {
     user.setEmail(discordUser.email());
     user.setDisplayName(discordUser.global_name());
     user.setUsername(discordUser.username());
-    user.setLastLogin(LocalDateTime.now());
+    user.setLastLogin(OffsetDateTime.now());
 
     user = this.userRepository.save(user);
 

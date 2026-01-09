@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ public class Squad {
 
   private String name;
   private String icon;
+  private OffsetDateTime createdAt;
   @OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Member> members;
 

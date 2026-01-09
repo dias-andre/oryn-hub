@@ -3,7 +3,7 @@ package com.httpsdre.ragnarok.dtos.invite;
 import com.httpsdre.ragnarok.dtos.member.InviteAuthorDTO;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Builder
@@ -13,8 +13,8 @@ public record InviteSummaryDTO(
         Integer usageCount,
         Integer usageLimit,
         boolean isPaused,
-        LocalDateTime createdAt,
-        LocalDateTime expiresAt,
+        OffsetDateTime createdAt,
+        OffsetDateTime expiresAt,
         InviteAuthorDTO author
 ) {
 }

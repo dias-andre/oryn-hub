@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,13 +31,13 @@ public class User {
 
   private boolean isActive;
   @Column(updatable = false)
-  private LocalDateTime createdAt;
-  private LocalDateTime lastLogin;
+  private OffsetDateTime createdAt;
+  private OffsetDateTime lastLogin;
 
   @OneToMany(mappedBy = "user")
   private List<Member> members;
 
-  public User(String discordId, String displayName, String username, String email, String avatar, boolean isActive, LocalDateTime createdAt, LocalDateTime lastLogin) {
+  public User(String discordId, String displayName, String username, String email, String avatar, boolean isActive, OffsetDateTime createdAt, OffsetDateTime lastLogin) {
     this.id = Generators.timeBasedEpochGenerator().generate();
     this.discordId = discordId;
     this.displayName = displayName;

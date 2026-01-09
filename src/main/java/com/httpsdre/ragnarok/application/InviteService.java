@@ -9,13 +9,12 @@ import com.httpsdre.ragnarok.mappers.InviteMapper;
 import com.httpsdre.ragnarok.mappers.SquadMapper;
 import com.httpsdre.ragnarok.models.*;
 import com.httpsdre.ragnarok.repositories.InviteRepository;
-import com.httpsdre.ragnarok.repositories.MemberRepository;
 import com.httpsdre.ragnarok.repositories.SquadRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,9 +26,9 @@ public class InviteService {
   private final MemberService memberService;
 
   @Transactional
-  public InviteSummaryDTO createInvite(UUID squadId, User author, LocalDateTime expires, Integer usageLimit) {
+  public InviteSummaryDTO createInvite(UUID squadId, User author, OffsetDateTime expires, Integer usageLimit) {
     Squad squadProxy = this.squadRepository.getReferenceById(squadId);
-    Invite newInvite = new Invite(null, null, 0, usageLimit, LocalDateTime.now(), expires, false, author, squadProxy);
+    Invite newInvite = new Invite(null, null, 0, usageLimit, OffsetDateTime.now(), expires, false, author, squadProxy);
     newInvite = this.inviteRepository.save(newInvite);
 
     var authorSummary = new InviteAuthorDTO(author.getId(), author.getDisplayName(), author.getUsername(), author.getAvatar());

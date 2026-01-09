@@ -1,6 +1,6 @@
 package com.httpsdre.ragnarok.dtos.user;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record UserSummaryDTO(
         String id,
@@ -10,8 +10,8 @@ public record UserSummaryDTO(
         String email,
         String avatar,
         boolean isActive,
-        LocalDateTime createdAt,
-        LocalDateTime lastLogin
+        OffsetDateTime createdAt,
+        OffsetDateTime lastLogin
 
 ) {
 }

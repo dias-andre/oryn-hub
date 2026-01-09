@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "squad_members")
@@ -33,5 +33,5 @@ public class Member {
   private SquadRole role;
 
   @Column(updatable = false)
-  private LocalDateTime joinedAt;
+  private OffsetDateTime joinedAt;
 }

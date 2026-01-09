@@ -17,7 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +41,7 @@ public class SquadService {
     owner.setId(memberId);
     owner.setUser(user);
     owner.setSquad(squad);
-    owner.setJoinedAt(LocalDateTime.now());
+    owner.setJoinedAt(OffsetDateTime.now());
     owner.setRole(SquadRole.OWNER);
 
     squad.getMembers().add(owner);
