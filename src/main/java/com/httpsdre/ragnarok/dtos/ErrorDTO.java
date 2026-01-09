@@ -2,11 +2,11 @@ package com.httpsdre.ragnarok.dtos;
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Builder
 public record ErrorDTO(
         String message,
-        LocalDateTime timestamp
+        OffsetDateTime timestamp
 ) {
 }
