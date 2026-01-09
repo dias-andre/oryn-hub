@@ -1,6 +1,7 @@
 package com.httpsdre.ragnarok.security;
 
 import com.httpsdre.ragnarok.models.MemberId;
+import com.httpsdre.ragnarok.repositories.InviteRepository;
 import com.httpsdre.ragnarok.repositories.MemberRepository;
 import com.httpsdre.ragnarok.types.SquadRole;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SecurityService {
   private final MemberRepository memberRepository;
+  private final InviteRepository inviteRepository;
 
   public boolean isMemberOf(UUID squadId, UUID userId) {
     return memberRepository.existsById(new MemberId(userId, squadId));
@@ -21,5 +23,9 @@ public class SecurityService {
     return memberRepository.findById(new MemberId(userId, squadId))
             .map(m -> m.getRole() == SquadRole.OWNER)
             .orElse(false);
+  }
+
+  public boolean isMemberOfInviteSquad(UUID inviteCode, UUID userId) {
+    return inviteRepository.isUserAlreadyInSquadByInviteCode(inviteCode, userId);
   }
 }

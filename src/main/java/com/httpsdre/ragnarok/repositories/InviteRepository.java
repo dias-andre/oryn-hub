@@ -27,4 +27,12 @@ public interface InviteRepository extends JpaRepository<Invite, UUID> {
     """)
   List<Invite> filterByUserAndSquadId(UUID userId, UUID squadId);
   Optional<Invite> findByCode(String code);
+
+  @Query("""
+    SELECT COUNT(m) > 0
+    FROM Invite i
+    JOIN Member m ON m.squad = i.squad
+    WHERE i.id = :code AND m.user.id = :userId
+    """)
+  boolean isUserAlreadyInSquadByInviteCode(UUID code, UUID userId);
 }

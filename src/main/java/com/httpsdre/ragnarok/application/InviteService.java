@@ -61,16 +61,6 @@ public class InviteService {
   }
 
   @Transactional
-  public void updateInvitePause(UUID inviteId, boolean newValue) {
-    Invite invite = this.inviteRepository.findById(inviteId)
-            .orElseThrow(() -> new NotFoundException("Invite with id " + inviteId.toString() + " not found!"));
-    if (newValue) {
-      invite.pause();
-    }
-    invite.unPause();
-  }
-
-  @Transactional
   public MemberSummaryDTO acceptInvite(String inviteCode, User user) {
     Invite invite = this.inviteRepository.findByCode(inviteCode)
             .orElseThrow(() -> new NotFoundException("Invite not found!"));
@@ -82,5 +72,18 @@ public class InviteService {
     Invite invite = this.inviteRepository.findByCode(inviteCode)
             .orElseThrow(() -> new NotFoundException("Invite with code " + inviteCode + " not found!"));
     return SquadMapper.toSummary(invite.getSquad());
+  }
+
+  @Transactional
+  public void pause(UUID inviteId) {
+    Invite invite = this.inviteRepository.findById(inviteId)
+            .orElseThrow(() -> new NotFoundException("Invite with Id " + inviteId.toString() + " not found!"));
+    invite.setPaused(true);
+  }
+
+  public void resume(UUID inviteId) {
+    Invite invite = this.inviteRepository.findById(inviteId)
+            .orElseThrow(() -> new NotFoundException("Invite with Id " + inviteId.toString() + "not found!"));
+    invite.setPaused(false);
   }
 }
