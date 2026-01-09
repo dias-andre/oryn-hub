@@ -5,6 +5,7 @@ import com.httpsdre.ragnarok.dtos.member.InviteAuthorDTO;
 import com.httpsdre.ragnarok.dtos.member.MemberSummaryDTO;
 import com.httpsdre.ragnarok.dtos.squad.SquadSummaryDTO;
 import com.httpsdre.ragnarok.exceptions.NotFoundException;
+import com.httpsdre.ragnarok.exceptions.BusinessException;
 import com.httpsdre.ragnarok.mappers.InviteMapper;
 import com.httpsdre.ragnarok.mappers.SquadMapper;
 import com.httpsdre.ragnarok.models.*;
@@ -64,6 +65,14 @@ public class InviteService {
   public MemberSummaryDTO acceptInvite(String inviteCode, User user) {
     Invite invite = this.inviteRepository.findByCode(inviteCode)
             .orElseThrow(() -> new NotFoundException("Invite not found!"));
+    var usageCount = invite.getUsageCount();
+    var usageLimit = invite.getUsageLimit();
+
+    if (usageLimit != null && usageCount >= usageLimit) {
+      throw new BusinessException("This invite has reached its usage limit.");
+    }
+    usageCount++;
+    invite.setUsageCount(usageCount);
     return this.memberService
             .pushMemberToSquad(invite.getSquad().getId(), user);
   }

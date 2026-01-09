@@ -1,7 +1,7 @@
 package com.httpsdre.ragnarok.application;
 
 import com.httpsdre.ragnarok.dtos.member.MemberSummaryDTO;
-import com.httpsdre.ragnarok.exceptions.ValidationException;
+import com.httpsdre.ragnarok.exceptions.BusinessException;
 import com.httpsdre.ragnarok.mappers.MemberMapper;
 import com.httpsdre.ragnarok.models.Member;
 import com.httpsdre.ragnarok.models.MemberId;
@@ -30,7 +30,7 @@ public class MemberService {
             .existsById(new MemberId(user.getId(), squadId));
 
     if(userHasSubscription) {
-      throw new ValidationException("This user is already a member!");
+      throw new BusinessException("This user is already a member!");
     }
 
     Member newMember = new Member();
