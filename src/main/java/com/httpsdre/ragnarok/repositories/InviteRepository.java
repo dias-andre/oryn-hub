@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface InviteRepository extends JpaRepository<Invite, UUID> {
@@ -25,4 +26,5 @@ public interface InviteRepository extends JpaRepository<Invite, UUID> {
     ORDER BY i.id ASC
     """)
   List<Invite> filterByUserAndSquadId(UUID userId, UUID squadId);
+  Optional<Invite> findByCode(String code);
 }

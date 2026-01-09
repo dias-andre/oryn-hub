@@ -2,8 +2,11 @@ package com.httpsdre.ragnarok.application;
 
 import com.httpsdre.ragnarok.dtos.invite.InviteSummaryDTO;
 import com.httpsdre.ragnarok.dtos.member.InviteAuthorDTO;
+import com.httpsdre.ragnarok.dtos.member.MemberSummaryDTO;
+import com.httpsdre.ragnarok.dtos.squad.SquadSummaryDTO;
 import com.httpsdre.ragnarok.exceptions.NotFoundException;
 import com.httpsdre.ragnarok.mappers.InviteMapper;
+import com.httpsdre.ragnarok.mappers.SquadMapper;
 import com.httpsdre.ragnarok.models.*;
 import com.httpsdre.ragnarok.repositories.InviteRepository;
 import com.httpsdre.ragnarok.repositories.MemberRepository;
@@ -21,7 +24,7 @@ import java.util.UUID;
 public class InviteService {
   private final SquadRepository squadRepository;
   private final InviteRepository inviteRepository;
-  private final MemberRepository memberRepository;
+  private final MemberService memberService;
 
   @Transactional
   public InviteSummaryDTO createInvite(UUID squadId, User author, LocalDateTime expires, Integer usageLimit) {
@@ -66,5 +69,19 @@ public class InviteService {
       invite.pause();
     }
     invite.unPause();
+  }
+
+  @Transactional
+  public MemberSummaryDTO acceptInvite(String inviteCode, User user) {
+    Invite invite = this.inviteRepository.findByCode(inviteCode)
+            .orElseThrow(() -> new NotFoundException("Invite not found!"));
+    return this.memberService
+            .pushMemberToSquad(invite.getSquad().getId(), user);
+  }
+
+  public SquadSummaryDTO fetchSquadByInviteCode(String inviteCode) {
+    Invite invite = this.inviteRepository.findByCode(inviteCode)
+            .orElseThrow(() -> new NotFoundException("Invite with code " + inviteCode + " not found!"));
+    return SquadMapper.toSummary(invite.getSquad());
   }
 }
