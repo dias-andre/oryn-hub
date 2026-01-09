@@ -34,7 +34,6 @@ public class SecurityConfigurations {
                     .requestMatchers(HttpMethod.POST, "/users/discord/auth").permitAll()
                     .requestMatchers(HttpMethod.POST, "/users/discord/register").permitAll()
                     .requestMatchers(HttpMethod.GET, "/docs").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                     .requestMatchers(
                             "/v3/api-docs",
                             "/v3/api-docs/**",
@@ -43,6 +42,7 @@ public class SecurityConfigurations {
                             "/swagger-resources/**",
                             "/webjars/**"
                     ).permitAll()
+                    .requestMatchers(HttpMethod.GET, "/invites/**").permitAll()
                     .anyRequest().authenticated()
             )
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
