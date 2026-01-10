@@ -1,5 +1,5 @@
 ALTER TABLE squads
     ADD COLUMN status VARCHAR(100),
-    ADD COLUMN is_deleted BOOL DEFAULT TRUE,
+    ADD COLUMN is_deleted BOOL DEFAULT FALSE,
     ADD COLUMN is_invites_paused BOOL DEFAULT FALSE,
     ADD COLUMN deleted_at TIMESTAMPTZ;
