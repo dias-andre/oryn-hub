@@ -11,6 +11,7 @@ import com.httpsdre.ragnarok.mappers.SquadMapper;
 import com.httpsdre.ragnarok.models.*;
 import com.httpsdre.ragnarok.repositories.InviteRepository;
 import com.httpsdre.ragnarok.repositories.SquadRepository;
+import com.httpsdre.ragnarok.types.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,7 @@ public class InviteService {
     newInvite = this.inviteRepository.save(newInvite);
 
     var authorSummary = new InviteAuthorDTO(author.getId(), author.getDisplayName(), author.getUsername(), author.getAvatar());
-    InviteSummaryDTO dto = InviteMapper.toSummary(newInvite, authorSummary);
-    return dto;
+    return InviteMapper.toSummary(newInvite, authorSummary);
   }
 
   public List<InviteSummaryDTO> getSquadInvites(UUID squadId) {
@@ -65,11 +65,16 @@ public class InviteService {
   public MemberSummaryDTO acceptInvite(String inviteCode, User user) {
     Invite invite = this.inviteRepository.findByCode(inviteCode)
             .orElseThrow(() -> new NotFoundException("Invite not found!"));
+
+    if(invite.isPaused()) {
+      throw new BusinessException(ErrorCode.INVITE_PAUSED);
+    }
+
     var usageCount = invite.getUsageCount();
     var usageLimit = invite.getUsageLimit();
 
     if (usageLimit != null && usageCount >= usageLimit) {
-      throw new BusinessException("This invite has reached its usage limit.");
+      throw new BusinessException(ErrorCode.INVITE_LIMIT_EXCEEDED);
     }
     usageCount++;
     invite.setUsageCount(usageCount);
@@ -90,6 +95,7 @@ public class InviteService {
     invite.setPaused(true);
   }
 
+  @Transactional
   public void resume(UUID inviteId) {
     Invite invite = this.inviteRepository.findById(inviteId)
             .orElseThrow(() -> new NotFoundException("Invite with Id " + inviteId.toString() + "not found!"));
