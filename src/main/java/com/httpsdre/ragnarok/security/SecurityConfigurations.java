@@ -32,6 +32,7 @@ public class SecurityConfigurations {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session ->
                     session.sessionCreationPolicy((SessionCreationPolicy.STATELESS))
@@ -51,7 +52,6 @@ public class SecurityConfigurations {
                     .requestMatchers(HttpMethod.GET, "/invites/**").permitAll()
                     .anyRequest().authenticated()
             )
-            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
   }
 

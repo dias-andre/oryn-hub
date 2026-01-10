@@ -11,6 +11,7 @@ import com.httpsdre.ragnarok.mappers.SquadMapper;
 import com.httpsdre.ragnarok.models.*;
 import com.httpsdre.ragnarok.repositories.InviteRepository;
 import com.httpsdre.ragnarok.repositories.SquadRepository;
+import com.httpsdre.ragnarok.repositories.UserRepository;
 import com.httpsdre.ragnarok.types.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,12 @@ public class InviteService {
   private final SquadRepository squadRepository;
   private final InviteRepository inviteRepository;
   private final MemberService memberService;
+  private final UserRepository userRepository;
 
   @Transactional
-  public InviteSummaryDTO createInvite(UUID squadId, User author, OffsetDateTime expires, Integer usageLimit) {
+  public InviteSummaryDTO createInvite(UUID squadId, UUID authorId, OffsetDateTime expires, Integer usageLimit) {
+    User author = this.userRepository.findById(authorId)
+            .orElseThrow(() -> new NotFoundException("User not found!"));
     Squad squadProxy = this.squadRepository.getReferenceById(squadId);
     Invite newInvite = new Invite(null, null, 0, usageLimit, OffsetDateTime.now(), expires, false, author, squadProxy);
     newInvite = this.inviteRepository.save(newInvite);

@@ -12,6 +12,7 @@ import com.httpsdre.ragnarok.models.Squad;
 import com.httpsdre.ragnarok.models.User;
 import com.httpsdre.ragnarok.repositories.MemberRepository;
 import com.httpsdre.ragnarok.repositories.SquadRepository;
+import com.httpsdre.ragnarok.repositories.UserRepository;
 import com.httpsdre.ragnarok.types.SquadRole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,12 @@ import java.util.UUID;
 public class SquadService {
   private final SquadRepository squadRepository;
   private final MemberRepository memberRepository;
+  private final UserRepository userRepository;
 
   @Transactional
-  public SquadSummaryDTO createSquad(String squadName, User user) {
+  public SquadSummaryDTO createSquad(String squadName, UUID userId) {
+    User user = this.userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundException("User not found!"));
     Squad squad = new Squad();
     squad.setId(Generators.timeBasedEpochGenerator().generate());
     squad.setName(squadName);

@@ -33,7 +33,7 @@ public class InviteController {
   }
 
   @PatchMapping("/{inviteId}/pause")
-  @PreAuthorize("@securityService.isMemberOfInviteSquad(inviteId, principal.id)")
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOfInviteSquad(inviteId, principal)")
   public ResponseEntity<Void>
     pauseInvite(@PathVariable UUID inviteId) {
     this.inviteService.pause(inviteId);
@@ -41,7 +41,7 @@ public class InviteController {
   }
 
   @PatchMapping("/{inviteId}/resume")
-  @PreAuthorize("@securityService.isMemberOfInviteSquad(inviteId, principal.id)")
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOfInviteSquad(inviteId, principal)")
   public ResponseEntity<Void>
     resumeInvite(@PathVariable UUID inviteId) {
     this.inviteService.resume(inviteId);

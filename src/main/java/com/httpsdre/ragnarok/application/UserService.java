@@ -65,4 +65,10 @@ public class UserService {
   public UserSummaryDTO toSummary(User user) {
     return UserMapper.toSummary(user);
   }
+
+  public UserSummaryDTO getUser(UUID userId) {
+    User user = this.userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundException("User not found!"));
+    return UserMapper.toSummary(user);
+  }
 }

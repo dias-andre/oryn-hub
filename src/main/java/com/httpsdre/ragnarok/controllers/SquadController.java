@@ -26,20 +26,21 @@ public class SquadController {
   private final InviteService inviteService;
 
   @PostMapping
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<SquadSummaryDTO> createSquad(@RequestBody CreateSquadRequest body,
-                                                     @AuthenticationPrincipal User user) {
-    var created = this.squadService.createSquad(body.name(), user);
+                                                     @AuthenticationPrincipal UUID userId) {
+    var created = this.squadService.createSquad(body.name(), userId);
     return ResponseEntity.status(201).body(created);
   }
   
-  @PreAuthorize("@securityService.isMemberOf(#id, principal.id)")
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#id, principal)")
   @GetMapping("/{id}/members")
   public ResponseEntity<List<MemberSummaryDTO>> getSquadMembers(@PathVariable UUID id) {
     var members = this.squadService.getSquadMembers(id);
     return ResponseEntity.ok(members);
   }
 
-  @PreAuthorize("@securityService.isMemberOf(#squadId, principal.id)")
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @GetMapping("/{squadId}/members/{userId}/invites")
   public ResponseEntity<List<InviteSummaryDTO>> getSquadMemberInvites(
           @PathVariable UUID squadId,
@@ -49,17 +50,17 @@ public class SquadController {
     return ResponseEntity.ok(invitesData);
   }
 
-  @PreAuthorize("@securityService.isMemberOf(#squadId, principal.id)")
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @PostMapping("/{squadId}/invites")
   public ResponseEntity<InviteSummaryDTO>
     createInvite(@PathVariable UUID squadId, @RequestBody CreateInviteRequest body,
-                 @AuthenticationPrincipal User author) {
+                 @AuthenticationPrincipal UUID  authorId) {
     var invitesData = this.inviteService
-            .createInvite(squadId, author, body.expiresAt(), body.usageLimit());
+            .createInvite(squadId, authorId, body.expiresAt(), body.usageLimit());
     return ResponseEntity.status(201).body(invitesData);
   }
 
-  @PreAuthorize("@securityService.isMemberOf(#squadId, principal.id)")
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @GetMapping("/{squadId}/invites")
   public ResponseEntity<List<InviteSummaryDTO>> getSquadInvites(@PathVariable UUID squadId) {
     var invites = this.inviteService.getSquadInvites(squadId);
