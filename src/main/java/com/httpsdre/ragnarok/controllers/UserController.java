@@ -39,4 +39,11 @@ public class UserController {
   public ResponseEntity<List<SquadSummaryDTO>> getUserSquads(@AuthenticationPrincipal UUID userId) {
     return ResponseEntity.ok(this.userService.getUserSquads(userId));
   }
+
+  @DeleteMapping("/@me")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal UUID userId) {
+    this.userService.deleteUser(userId);
+    return ResponseEntity.noContent().build();
+  }
 }

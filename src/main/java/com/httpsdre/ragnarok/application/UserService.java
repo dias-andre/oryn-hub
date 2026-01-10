@@ -71,4 +71,10 @@ public class UserService {
             .map(SquadMapper::toSummary)
             .toList();
   }
+
+  public void deleteUser(UUID userId) {
+    if(this.userRepository.existsById(userId)) {
+      this.userRepository.deleteById(userId);
+    }
+  }
 }
