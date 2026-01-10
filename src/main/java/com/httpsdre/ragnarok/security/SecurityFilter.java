@@ -31,8 +31,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     if(token != null) {
       String userIdString = tokenService.validateToken(token);
       if(!userIdString.isEmpty()) {
-        User user = userRepository.findById(UUID.fromString(userIdString))
-                .orElseThrow(() -> new UnauthorizedException("User unauthorized!"));
+        User user = userRepository.getReferenceById(UUID.fromString(userIdString));
         var authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
