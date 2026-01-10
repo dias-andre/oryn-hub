@@ -1,5 +1,8 @@
 package com.httpsdre.ragnarok.types;
 
+import lombok.Getter;
+
+@Getter
 public enum ErrorCode {
   INVITE_LIMIT_EXCEEDED("This invite has reached its usage limit"),
   INVITE_EXPIRED("This invite has expired."),
@@ -12,9 +15,5 @@ public enum ErrorCode {
 
   ErrorCode(String defaultMessage) {
     this.defaultMessage = defaultMessage;
-  }
-
-  public String getDefaultMessage() {
-    return defaultMessage;
   }
 }
