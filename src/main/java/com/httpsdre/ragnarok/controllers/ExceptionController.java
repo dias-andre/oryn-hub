@@ -8,6 +8,7 @@ import com.httpsdre.ragnarok.exceptions.BusinessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.OffsetDateTime;
 
@@ -41,5 +42,14 @@ public class ExceptionController {
     return ResponseEntity.status(500).body(
             new ErrorDTO("INTERNAL_SERVER_ERROR", "Internal server error", OffsetDateTime.now())
     );
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<ErrorDTO> noResourceFoundException(NoResourceFoundException e) {
+    return ResponseEntity.badRequest().body(new ErrorDTO(
+            "ROUTE_NOT_FOUND",
+            e.getMessage(),
+            OffsetDateTime.now()
+    ));
   }
 }
