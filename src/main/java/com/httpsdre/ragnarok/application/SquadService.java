@@ -63,4 +63,10 @@ public class SquadService {
     var members = this.memberRepository.findBySquadId(squadId);
     return members.stream().map(MemberMapper::toSummary).toList();
   }
+
+  public void deleteSquad(UUID squadId) {
+    if(this.squadRepository.existsById(squadId)) {
+      this.squadRepository.deleteById(squadId);
+    }
+  }
 }

@@ -44,11 +44,9 @@ public class UserService {
       User newUser = new User();
       newUser.setDiscordId(discordUser.id());
       newUser.setCreatedAt(OffsetDateTime.now());
-      newUser.setActive(true);
       return newUser;
     });
 
-    user.setActive(true);
     user.setAvatar(discordUser.avatar());
     user.setEmail(discordUser.email());
     user.setDisplayName(discordUser.global_name());

@@ -9,7 +9,6 @@ public record UserSummaryDTO(
         String username,
         String email,
         String avatar,
-        boolean isActive,
         OffsetDateTime createdAt,
         OffsetDateTime lastLogin
 

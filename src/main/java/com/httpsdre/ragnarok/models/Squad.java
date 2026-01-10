@@ -33,6 +33,7 @@ public class Squad {
   private SquadStatus status;
 //  @Column(insertable = false)
 //  private boolean isDeleted;
+  @Column(insertable = false)
   private OffsetDateTime deletedAt;
 
   @OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true)
