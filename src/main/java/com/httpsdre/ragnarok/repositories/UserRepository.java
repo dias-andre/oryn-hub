@@ -3,6 +3,8 @@ package com.httpsdre.ragnarok.repositories;
 import com.httpsdre.ragnarok.models.User;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -14,4 +16,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
   boolean existsByDiscordId(String discordId);
 
   User getReferenceByDiscordId(@NotBlank String id);
+
+  @Modifying
+  @Query(value = """
+    UPDATE users SET is_deleted = false 
+    WHERE id = :userId
+    """, nativeQuery = true)
+  void activateUser(UUID userId);
 }
