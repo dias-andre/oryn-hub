@@ -24,7 +24,7 @@ public class UserController {
   @PostMapping("/discord/auth")
   public ResponseEntity<LoginResponse>
     authUser(@Valid @RequestBody GetUserTokenRequest body) {
-    var result = this.userService.authAndCreateUser(body.token());
+    var result = this.userService.authUser(body.token());
     return ResponseEntity.ok(result);
   }
 

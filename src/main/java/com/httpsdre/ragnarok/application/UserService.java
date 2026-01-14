@@ -4,6 +4,7 @@ import com.httpsdre.ragnarok.dtos.GetCurrentUserRequest;
 import com.httpsdre.ragnarok.dtos.squad.SquadSummaryDTO;
 import com.httpsdre.ragnarok.dtos.user.LoginResponse;
 import com.httpsdre.ragnarok.dtos.user.UserSummaryDTO;
+import com.httpsdre.ragnarok.exceptions.BusinessException;
 import com.httpsdre.ragnarok.exceptions.NotFoundException;
 import com.httpsdre.ragnarok.exceptions.UnauthorizedException;
 import com.httpsdre.ragnarok.mappers.SquadMapper;
@@ -13,6 +14,7 @@ import com.httpsdre.ragnarok.models.User;
 import com.httpsdre.ragnarok.providers.DiscordProvider;
 import com.httpsdre.ragnarok.repositories.SquadRepository;
 import com.httpsdre.ragnarok.repositories.UserRepository;
+import com.httpsdre.ragnarok.types.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class UserService {
   private final TokenService tokenService;
 
   @Transactional
-  public LoginResponse authAndCreateUser(String token) {
+  public LoginResponse authUser(String token) {
     GetCurrentUserRequest discordUser;
     try {
       discordUser = this.discord.getCurrentUser(token);
@@ -40,12 +42,8 @@ public class UserService {
       throw new UnauthorizedException("Discord user not found!");
     }
 
-    User user = this.userRepository.findByDiscordId(discordUser.id()).orElseGet(() -> {
-      User newUser = new User();
-      newUser.setDiscordId(discordUser.id());
-      newUser.setCreatedAt(OffsetDateTime.now());
-      return newUser;
-    });
+    User user = this.userRepository.findByDiscordId(discordUser.id())
+            .orElseThrow(() -> new NotFoundException("User with discord id " + discordUser.id() + " not found!"));
 
     user.setAvatar(discordUser.avatar());
     user.setEmail(discordUser.email());
@@ -57,6 +55,37 @@ public class UserService {
 
     String jwt = this.tokenService.generateUserToken(user);
     return new LoginResponse(jwt, UserMapper.toSummary(user));
+  }
+
+  @Transactional
+  public LoginResponse createUser(String token) {
+    GetCurrentUserRequest discordUser;
+    try {
+      discordUser = this.discord.getCurrentUser(token);
+    } catch (Exception _) {
+      throw new UnauthorizedException("Discord user not found!");
+    }
+
+    if(discordUser.email() == null) {
+      throw new BusinessException(ErrorCode.INVALID_EMAIL);
+    }
+
+    var userWithEmail = this.userRepository.findByEmail(discordUser.email());
+    if(userWithEmail.isPresent()) { // here, user already exists
+      String jwt = this.tokenService.generateUserToken(userWithEmail.get());
+      return new LoginResponse(jwt, UserMapper.toSummary(userWithEmail.get()));
+    }
+
+    User newUser = new User();
+    newUser.setDiscordId(discordUser.id());
+    newUser.setEmail(discordUser.email());
+    newUser.setLastLogin(OffsetDateTime.now());
+    newUser.setUsername(discordUser.username());
+
+    newUser = this.userRepository.save(newUser);
+
+    String jwt = this.tokenService.generateUserToken(newUser);
+    return new LoginResponse(jwt, UserMapper.toSummary(newUser));
   }
 
   public UserSummaryDTO getUser(UUID userId) {

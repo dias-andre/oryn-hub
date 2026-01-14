@@ -13,6 +13,8 @@ public enum ErrorCode {
   INVALID_END_DATE("End date must be a future date"),
   INVALID_START_DATE("Start date must be a past date"),
 
+  INVALID_EMAIL("Each user must have a valid email address"),
+
   UNDEFINED("No error code");
 
   private final String defaultMessage;

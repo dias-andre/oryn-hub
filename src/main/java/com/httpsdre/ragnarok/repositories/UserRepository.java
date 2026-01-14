@@ -13,9 +13,7 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
   Optional<User> findByDiscordId(String discordId);
-  boolean existsByDiscordId(String discordId);
-
-  User getReferenceByDiscordId(@NotBlank String id);
+  Optional<User> findByEmail(String email);
 
   @Modifying
   @Query(value = """
