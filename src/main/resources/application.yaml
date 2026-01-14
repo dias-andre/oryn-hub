@@ -17,6 +17,11 @@ springdoc:
   swagger-ui:
     path: /docs
 
+r2:
+  endpoint: ${R2_ENDPOINT}
+  access-key: ${R2_ACCESS_KEY}
+  secret-key: ${R2_SECRET_KEY}
+
 api:
   security:
     token:
