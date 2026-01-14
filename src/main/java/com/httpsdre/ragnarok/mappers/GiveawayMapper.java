@@ -7,6 +7,7 @@ import com.httpsdre.ragnarok.models.User;
 public class GiveawayMapper {
   public static GiveawaySummaryDTO toSummary(Giveaway model, User author) {
     return GiveawaySummaryDTO.builder()
+            .id(model.getId())
             .title(model.getTitle())
             .prizeDescription(model.getPrizeDescription())
             .startsAt(model.getStartsAt())
@@ -23,6 +24,7 @@ public class GiveawayMapper {
   public static GiveawaySummaryDTO toSummary(Giveaway model) {
     var author = model.getAuthor();
     return GiveawaySummaryDTO.builder()
+            .id(model.getId())
             .title(model.getTitle())
             .prizeDescription(model.getPrizeDescription())
             .startsAt(model.getStartsAt())

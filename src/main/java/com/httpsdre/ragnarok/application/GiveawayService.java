@@ -16,9 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +53,7 @@ public class GiveawayService {
 
   public List<GiveawaySummaryDTO> getSquadGiveaways(UUID squadId, UUID lastId, int pageSize) {
     int safeSize = (pageSize > 20 || pageSize <= 0) ? 20 : pageSize;
-    Pageable limit = (Pageable) PageRequest.of(0, safeSize);
+    Pageable limit = PageRequest.of(0, safeSize);
     var giveaways = this.giveawayRepository.findBySquadId_Paged(squadId, lastId, limit);
     return giveaways.stream()
             .map(GiveawayMapper::toSummary)

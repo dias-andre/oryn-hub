@@ -7,6 +7,7 @@ import java.util.UUID;
 
 @Builder
 public record GiveawaySummaryDTO(
+        UUID id,
         String title,
         String prizeDescription,
         OffsetDateTime startsAt,
