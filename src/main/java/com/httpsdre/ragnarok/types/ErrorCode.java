@@ -9,6 +9,10 @@ public enum ErrorCode {
   INVITE_PAUSED("This invite is paused"),
   USER_ALREADY_IN_SQUAD("This user is already member of this squad"),
   INSUFFICIENT_FUNDS("Insufficient funds"),
+
+  INVALID_END_DATE("End date must be a future date"),
+  INVALID_START_DATE("Start date must be a past date"),
+
   UNDEFINED("No error code");
 
   private final String defaultMessage;

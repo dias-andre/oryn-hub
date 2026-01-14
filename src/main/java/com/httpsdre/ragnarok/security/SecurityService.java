@@ -1,6 +1,7 @@
 package com.httpsdre.ragnarok.security;
 
 import com.httpsdre.ragnarok.models.MemberId;
+import com.httpsdre.ragnarok.repositories.GiveawayRepository;
 import com.httpsdre.ragnarok.repositories.InviteRepository;
 import com.httpsdre.ragnarok.repositories.MemberRepository;
 import com.httpsdre.ragnarok.types.SquadRole;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class SecurityService {
   private final MemberRepository memberRepository;
   private final InviteRepository inviteRepository;
+  private final GiveawayRepository giveawayRepository;
 
   public boolean isMemberOf(UUID squadId, UUID userId) {
     return memberRepository.existsById(new MemberId(userId, squadId));
@@ -27,5 +29,9 @@ public class SecurityService {
 
   public boolean isMemberOfInviteSquad(UUID inviteCode, UUID userId) {
     return inviteRepository.isUserAlreadyInSquadByInviteCode(inviteCode, userId);
+  }
+
+  public boolean isMemberOfGiveawaySquad(UUID giveawayId, UUID userId) {
+    return giveawayRepository.isMemberOfGiveawaySquad(userId, giveawayId);
   }
 }

@@ -1,7 +1,10 @@
 package com.httpsdre.ragnarok.controllers;
 
+import com.httpsdre.ragnarok.application.GiveawayService;
 import com.httpsdre.ragnarok.application.InviteService;
 import com.httpsdre.ragnarok.application.SquadService;
+import com.httpsdre.ragnarok.dtos.giveaway.CreateGiveawayRequest;
+import com.httpsdre.ragnarok.dtos.giveaway.GiveawaySummaryDTO;
 import com.httpsdre.ragnarok.dtos.invite.CreateInviteRequest;
 import com.httpsdre.ragnarok.dtos.invite.InviteSummaryDTO;
 import com.httpsdre.ragnarok.dtos.member.MemberSummaryDTO;
@@ -24,6 +27,7 @@ import java.util.UUID;
 public class SquadController {
   private final SquadService squadService;
   private final InviteService inviteService;
+  private final GiveawayService giveawayService;
 
   @PostMapping
   @PreAuthorize("isAuthenticated()")
@@ -32,6 +36,15 @@ public class SquadController {
     var created = this.squadService.createSquad(body.name(), userId);
     return ResponseEntity.status(201).body(created);
   }
+
+  @PreAuthorize("isAuthenticated() and @securityService.isOwnerOf(#squadId, principal)")
+  @DeleteMapping("/{squadId}")
+  public ResponseEntity<Void> deleteSquad(@PathVariable UUID squadId) {
+    this.squadService.deleteSquad(squadId);
+    return ResponseEntity.noContent().build();
+  }
+
+  /* Members */
   
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#id, principal)")
   @GetMapping("/{id}/members")
@@ -40,6 +53,7 @@ public class SquadController {
     return ResponseEntity.ok(members);
   }
 
+  /* Invites */
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @GetMapping("/{squadId}/members/{userId}/invites")
   public ResponseEntity<List<InviteSummaryDTO>> getSquadMemberInvites(
@@ -65,5 +79,25 @@ public class SquadController {
   public ResponseEntity<List<InviteSummaryDTO>> getSquadInvites(@PathVariable UUID squadId) {
     var invites = this.inviteService.getSquadInvites(squadId);
     return ResponseEntity.ok(invites);
+  }
+
+  /* Giveaways */
+
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
+  @PostMapping("/{squadId}/giveaways")
+  public ResponseEntity<GiveawaySummaryDTO>
+    createGiveaway(@PathVariable UUID squadId, @RequestBody CreateGiveawayRequest body,
+                   @AuthenticationPrincipal UUID authorId) {
+    var created = this.giveawayService.createGiveaway(authorId, squadId, body);
+    return ResponseEntity.status(201).body(created);
+  }
+
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
+  @GetMapping("/{squadId}/giveaways")
+  public ResponseEntity<List<GiveawaySummaryDTO>>
+    getSquadGiveaways(@PathVariable UUID squadId, @RequestParam(required = false) UUID lastId,
+                      @RequestParam(defaultValue = "10") int pageSize) {
+    var list = this.giveawayService.getSquadGiveaways(squadId, lastId, pageSize);
+    return ResponseEntity.ok(list);
   }
 }

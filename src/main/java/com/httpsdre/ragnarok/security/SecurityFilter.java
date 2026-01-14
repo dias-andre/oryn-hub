@@ -2,7 +2,6 @@ package com.httpsdre.ragnarok.security;
 
 import com.httpsdre.ragnarok.application.TokenService;
 import com.httpsdre.ragnarok.exceptions.UnauthorizedException;
-import com.httpsdre.ragnarok.models.User;
 import com.httpsdre.ragnarok.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,6 +31,9 @@ public class SecurityFilter extends OncePerRequestFilter {
       if (token != null) {
         String userIdString = tokenService.validateToken(token);
         if (!userIdString.isEmpty()) {
+          if(!this.userRepository.existsById(UUID.fromString(userIdString))) {
+            throw new UnauthorizedException("Unauthorized!");
+          }
           var authentication = new UsernamePasswordAuthenticationToken(UUID.fromString(userIdString), null, Collections.emptyList());
           SecurityContextHolder.getContext().setAuthentication(authentication);
         }

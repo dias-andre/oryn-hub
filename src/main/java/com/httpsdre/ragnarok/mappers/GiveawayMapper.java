@@ -1,0 +1,38 @@
+package com.httpsdre.ragnarok.mappers;
+
+import com.httpsdre.ragnarok.dtos.giveaway.GiveawaySummaryDTO;
+import com.httpsdre.ragnarok.models.Giveaway;
+import com.httpsdre.ragnarok.models.User;
+
+public class GiveawayMapper {
+  public static GiveawaySummaryDTO toSummary(Giveaway model, User author) {
+    return GiveawaySummaryDTO.builder()
+            .title(model.getTitle())
+            .prizeDescription(model.getPrizeDescription())
+            .startsAt(model.getStartsAt())
+            .endsAt(model.getEndsAt())
+            .createdAt(model.getCreatedAt())
+            .author(new GiveawaySummaryDTO.Author(
+                    author.getId(),
+                    author.getDisplayName(),
+                    author.getUsername(),
+                    author.getAvatar()
+            )).build();
+  }
+
+  public static GiveawaySummaryDTO toSummary(Giveaway model) {
+    var author = model.getAuthor();
+    return GiveawaySummaryDTO.builder()
+            .title(model.getTitle())
+            .prizeDescription(model.getPrizeDescription())
+            .startsAt(model.getStartsAt())
+            .endsAt(model.getEndsAt())
+            .createdAt(model.getCreatedAt())
+            .author(new GiveawaySummaryDTO.Author(
+                    author.getId(),
+                    author.getDisplayName(),
+                    author.getUsername(),
+                    author.getAvatar()
+            )).build();
+  }
+}
