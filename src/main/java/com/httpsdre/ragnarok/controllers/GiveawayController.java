@@ -1,14 +1,17 @@
 package com.httpsdre.ragnarok.controllers;
 
 import com.httpsdre.ragnarok.application.GiveawayService;
+import com.httpsdre.ragnarok.application.ProofService;
+import com.httpsdre.ragnarok.dtos.proof.ProofSummaryDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -16,11 +19,32 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GiveawayController {
   private final GiveawayService giveawayService;
+  private final ProofService proofService;
 
   @DeleteMapping("/{giveawayId}")
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOfGiveawaySquad(giveawayId, principal)")
   public ResponseEntity<Void> deleteGiveaway(@PathVariable UUID giveawayId) {
     this.giveawayService.deleteGiveawayById(giveawayId);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/{giveawayId}/proofs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOfGiveawaySquad(#giveawayId, principal)")
+  public ResponseEntity<ProofSummaryDTO> uploadProof(
+          @RequestParam("file") MultipartFile file,
+          @PathVariable UUID giveawayId,
+          @AuthenticationPrincipal UUID authorId,
+          @RequestParam(value = "description", required = false) String description
+          ) {
+    var savedProof = proofService.processAndUpload(file, giveawayId, authorId, description);
+    return ResponseEntity.status(201).body(savedProof);
+  }
+
+  @GetMapping("/{giveawayId}/proofs")
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOfGiveawaySquad(#giveawayId, principal)")
+  public ResponseEntity<List<ProofSummaryDTO>>
+    getGiveawayProofs(@PathVariable UUID giveawayId) {
+    var result = this.proofService.getGiveawayProofs(giveawayId);
+    return ResponseEntity.ok(result);
   }
 }
