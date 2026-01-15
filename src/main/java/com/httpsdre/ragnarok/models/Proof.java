@@ -27,7 +27,7 @@ public class Proof {
   @Transient
   private String url;
 
-  @Column(updatable = false, nullable = false)
+  @Column(updatable = false)
   private OffsetDateTime createdAt;
 
   @ManyToOne
