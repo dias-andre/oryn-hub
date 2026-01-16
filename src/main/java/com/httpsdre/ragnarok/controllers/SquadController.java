@@ -44,8 +44,14 @@ public class SquadController {
     return ResponseEntity.noContent().build();
   }
 
+  @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
+  @GetMapping("/{squadId}")
+  public ResponseEntity<SquadSummaryDTO> getSquadById(@PathVariable UUID squadId) {
+    return ResponseEntity.ok(this.squadService.getSquadById(squadId));
+  }
+
   /* Members */
-  
+
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#id, principal)")
   @GetMapping("/{id}/members")
   public ResponseEntity<List<MemberSummaryDTO>> getSquadMembers(@PathVariable UUID id) {
@@ -67,8 +73,8 @@ public class SquadController {
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @PostMapping("/{squadId}/invites")
   public ResponseEntity<InviteSummaryDTO>
-    createInvite(@PathVariable UUID squadId, @RequestBody CreateInviteRequest body,
-                 @AuthenticationPrincipal UUID  authorId) {
+  createInvite(@PathVariable UUID squadId, @RequestBody CreateInviteRequest body,
+               @AuthenticationPrincipal UUID authorId) {
     var invitesData = this.inviteService
             .createInvite(squadId, authorId, body.expiresAt(), body.usageLimit());
     return ResponseEntity.status(201).body(invitesData);
@@ -86,8 +92,8 @@ public class SquadController {
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @PostMapping("/{squadId}/giveaways")
   public ResponseEntity<GiveawaySummaryDTO>
-    createGiveaway(@PathVariable UUID squadId, @RequestBody CreateGiveawayRequest body,
-                   @AuthenticationPrincipal UUID authorId) {
+  createGiveaway(@PathVariable UUID squadId, @RequestBody CreateGiveawayRequest body,
+                 @AuthenticationPrincipal UUID authorId) {
     var created = this.giveawayService.createGiveaway(authorId, squadId, body);
     return ResponseEntity.status(201).body(created);
   }
@@ -95,8 +101,8 @@ public class SquadController {
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @GetMapping("/{squadId}/giveaways")
   public ResponseEntity<List<GiveawaySummaryDTO>>
-    getSquadGiveaways(@PathVariable UUID squadId, @RequestParam(required = false) UUID lastId,
-                      @RequestParam(defaultValue = "10") int pageSize) {
+  getSquadGiveaways(@PathVariable UUID squadId, @RequestParam(required = false) UUID lastId,
+                    @RequestParam(defaultValue = "10") int pageSize) {
     var list = this.giveawayService.getSquadGiveaways(squadId, lastId, pageSize);
     return ResponseEntity.ok(list);
   }

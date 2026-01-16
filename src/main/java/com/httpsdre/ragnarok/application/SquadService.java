@@ -69,4 +69,9 @@ public class SquadService {
       this.squadRepository.deleteById(squadId);
     }
   }
+
+  public SquadSummaryDTO getSquadById(UUID squadId) {
+    return SquadMapper.toSummary(this.squadRepository.findById(squadId)
+            .orElseThrow(() -> new NotFoundException("Squad not found!")));
+  }
 }
