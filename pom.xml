@@ -8,10 +8,10 @@
         <version>3.5.9</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.httpsdre</groupId>
-    <artifactId>ragnarok</artifactId>
+    <groupId>com.diasandre</groupId>
+    <artifactId>oryn</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Ragnarok</name>
+    <name>oryn</name>
     <description>Demo project for Spring Boot</description>
     <url/>
     <licenses>
@@ -110,7 +110,7 @@
     </dependencies>
 
     <build>
-        <finalName>ragnarok</finalName>
+        <finalName>oryn</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
