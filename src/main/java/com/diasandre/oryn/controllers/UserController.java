@@ -5,6 +5,8 @@ import com.diasandre.oryn.dtos.squad.SquadSummaryDTO;
 import com.diasandre.oryn.dtos.user.GetUserTokenRequest;
 import com.diasandre.oryn.dtos.user.LoginResponse;
 import com.diasandre.oryn.dtos.user.UserSummaryDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Tag(name = "users")
 public class UserController {
   private final UserService userService;
 
   @PostMapping("/discord/auth")
+  @Operation(summary = "Authenticate user by discord token")
   public ResponseEntity<LoginResponse>
     authUser(@Valid @RequestBody GetUserTokenRequest body) {
     var result = this.userService.authUser(body.token());
@@ -30,18 +34,21 @@ public class UserController {
 
   @GetMapping("/@me")
   @PreAuthorize("isAuthenticated()")
+  @Operation(summary = "Get user profile using JWT")
   public ResponseEntity<UserSummaryDTO> me(@AuthenticationPrincipal UUID userId) {
     return ResponseEntity.ok(this.userService.getUser(userId));
   }
 
   @GetMapping("/@me/squads")
   @PreAuthorize("isAuthenticated()")
+  @Operation(summary = "Get user squads using JWT")
   public ResponseEntity<List<SquadSummaryDTO>> getUserSquads(@AuthenticationPrincipal UUID userId) {
     return ResponseEntity.ok(this.userService.getUserSquads(userId));
   }
 
   @DeleteMapping("/@me")
   @PreAuthorize("isAuthenticated()")
+  @Operation(summary = "Delete user account using JWT")
   public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal UUID userId) {
     this.userService.deleteUser(userId);
     return ResponseEntity.noContent().build();
