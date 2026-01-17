@@ -4,6 +4,7 @@ import com.diasandre.oryn.application.UserService;
 import com.diasandre.oryn.dtos.squad.SquadSummaryDTO;
 import com.diasandre.oryn.dtos.user.GetUserTokenRequest;
 import com.diasandre.oryn.dtos.user.LoginResponse;
+import com.diasandre.oryn.dtos.user.SignUpWithDiscord;
 import com.diasandre.oryn.dtos.user.UserSummaryDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,5 +53,10 @@ public class UserController {
   public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal UUID userId) {
     this.userService.deleteUser(userId);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/discord/register")
+  public ResponseEntity<LoginResponse> createUserAccount(@RequestBody SignUpWithDiscord body) {
+    return ResponseEntity.status(201).body(this.userService.createUser(body));
   }
 }
