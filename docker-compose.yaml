@@ -3,7 +3,7 @@ services:
     image: postgres:17
     environment:
       POSTGRES_USER: root
-      POSTGRES_DB: ragnarok
+      POSTGRES_DB: oryn
       POSTGRES_PASSWORD: root
     volumes:
       - pg_data:/var/lib/postgresql/data

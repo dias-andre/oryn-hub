@@ -2,8 +2,7 @@ package com.diasandre.oryn.application;
 
 import com.diasandre.oryn.dtos.GetCurrentUserRequest;
 import com.diasandre.oryn.dtos.squad.SquadSummaryDTO;
-import com.diasandre.oryn.dtos.user.LoginResponse;
-import com.diasandre.oryn.dtos.user.UserSummaryDTO;
+import com.diasandre.oryn.dtos.user.*;
 import com.diasandre.oryn.exceptions.BusinessException;
 import com.diasandre.oryn.exceptions.NotFoundException;
 import com.diasandre.oryn.exceptions.UnauthorizedException;
@@ -17,6 +16,7 @@ import com.diasandre.oryn.repositories.UserRepository;
 import com.diasandre.oryn.types.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -43,11 +43,22 @@ public class UserService {
     }
 
     User user = this.userRepository.findByDiscordId(discordUser.id())
-            .orElseThrow(() -> new NotFoundException("User with discord id " + discordUser.id() + " not found!"));
+            .orElseGet(() -> {
+              var userWithEmail = this.userRepository.findByEmail(discordUser.email());
+              if(userWithEmail.isPresent()) {
+                throw new BusinessException(ErrorCode.EMAIL_EXISTS);
+              }
+              User newUser = new User();
+              newUser.setDiscordId(discordUser.id());
+              newUser.setEmail(discordUser.email());
+              newUser.setDisplayName(discordUser.global_name());
+              newUser.setAvatar(discordUser.avatar());
+              return newUser;
+            });
 
-    user.setAvatar(discordUser.avatar());
-    user.setEmail(discordUser.email());
-    user.setDisplayName(discordUser.global_name());
+//    user.setAvatar(discordUser.avatar());
+//    user.setEmail(discordUser.email());
+//    user.setDisplayName(discordUser.global_name());
     user.setUsername(discordUser.username());
     user.setLastLogin(OffsetDateTime.now());
 
@@ -58,10 +69,10 @@ public class UserService {
   }
 
   @Transactional
-  public LoginResponse createUser(String token) {
+  public LoginResponse createUser(SignUpWithDiscord data) {
     GetCurrentUserRequest discordUser;
     try {
-      discordUser = this.discord.getCurrentUser(token);
+      discordUser = this.discord.getCurrentUser(data.discordToken());
     } catch (Exception _) {
       throw new UnauthorizedException("Discord user not found!");
     }
@@ -77,6 +88,9 @@ public class UserService {
     }
 
     User newUser = new User();
+    newUser.setDiscordId(data.displayName());
+    newUser.setAvatar(data.avatar());
+
     newUser.setDiscordId(discordUser.id());
     newUser.setEmail(discordUser.email());
     newUser.setLastLogin(OffsetDateTime.now());
@@ -86,6 +100,40 @@ public class UserService {
 
     String jwt = this.tokenService.generateUserToken(newUser);
     return new LoginResponse(jwt, UserMapper.toSummary(newUser));
+  }
+
+  @Transactional
+  public LoginResponse createUser(CreateUserByPassword data) {
+    var userWithEmail = this.userRepository.findByEmail(data.email());
+    if(userWithEmail.isPresent()) {
+      throw new BusinessException(ErrorCode.EMAIL_EXISTS);
+    }
+    User user = new User();
+    user.setEmail(data.email());
+    user.setPasswordHash(this.hashPassword(data.password()));
+    user.setDisplayName(data.displayName());
+    String name = data.email().split("@")[0];
+    user.setUsername(name);
+    user.setLastLogin(OffsetDateTime.now());
+    user = this.userRepository.save(user);
+    String jwt = this.tokenService.generateUserToken(user);
+    return new LoginResponse(jwt, UserMapper.toSummary(user));
+  }
+
+  @Transactional
+  public LoginResponse authByPassword(EmailAndPasswordRequest body) {
+    var userWithEmail = this.userRepository.findByEmail(body.email());
+    if(userWithEmail.isEmpty()) {
+      throw new UnauthorizedException("E-mail or password incorrect.");
+    }
+
+    User user = userWithEmail.get();
+    if(!this.checkPassword(body.password(), user.getPasswordHash())) {
+      throw new UnauthorizedException("E-mail or password incorrect");
+    }
+    user.setLastLogin(OffsetDateTime.now());
+    String jwt = this.tokenService.generateUserToken(user);
+    return new LoginResponse(jwt, UserMapper.toSummary(user));
   }
 
   public UserSummaryDTO getUser(UUID userId) {
@@ -105,5 +153,13 @@ public class UserService {
     if(this.userRepository.existsById(userId)) {
       this.userRepository.deleteById(userId);
     }
+  }
+
+  private String hashPassword(String password) {
+    return BCrypt.hashpw(password, BCrypt.gensalt(12));
+  }
+
+  private boolean checkPassword(String password, String hash) {
+    return BCrypt.checkpw(password, hash);
   }
 }

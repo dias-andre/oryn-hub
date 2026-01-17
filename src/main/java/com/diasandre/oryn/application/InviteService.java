@@ -17,6 +17,7 @@ import com.diasandre.oryn.repositories.UserRepository;
 import com.diasandre.oryn.types.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -45,6 +46,18 @@ public class InviteService {
 
   public List<InviteSummaryDTO> getSquadInvites(UUID squadId) {
     List<Invite> invites = this.inviteRepository.findAllWithDetails(squadId);
+    return invites.stream()
+            .map(i -> {
+              User author = i.getAuthor();
+              return InviteMapper.toSummary(i,
+                      new InviteAuthorDTO(author.getId(), author.getDisplayName(),
+                              author.getUsername(), author.getAvatar())
+              );
+            }).toList();
+  }
+
+  public List<InviteSummaryDTO> getSquadInvites(UUID squadId, Pageable pageable) {
+    List<Invite> invites = this.inviteRepository.findBySquadIdOrderByIdDesc(squadId, pageable);
     return invites.stream()
             .map(i -> {
               User author = i.getAuthor();

@@ -60,6 +60,12 @@ public class GiveawayService {
             .toList();
   }
 
+  public List<GiveawaySummaryDTO> getSquadGiveaways(UUID squadId, Pageable pageable) {
+    return this.giveawayRepository.findBySquadIdOrderByIdDesc(squadId, pageable).stream()
+            .map(g -> GiveawayMapper.toSummary(g, g.getAuthor()))
+            .toList();
+  }
+
   public boolean deleteGiveawayById(UUID giveawayId) {
     if(this.giveawayRepository.existsById(giveawayId)) {
       this.giveawayRepository.deleteById(giveawayId);
