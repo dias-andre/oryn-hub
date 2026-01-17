@@ -43,7 +43,7 @@ public class SecurityConfigurations {
                     .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                     .requestMatchers(HttpMethod.POST, "/users/auth").permitAll()
                     .requestMatchers(
-                            "docs",
+                            "/docs",
                             "/v3/api-docs",
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
