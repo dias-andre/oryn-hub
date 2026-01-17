@@ -15,10 +15,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @SoftDelete(columnName = "is_deleted")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor @AllArgsConstructor
+@Getter @Setter
 public class User {
   @Id
   private UUID id;
@@ -30,6 +28,7 @@ public class User {
   @Column(unique = true)
   private String email;
   private String avatar;
+  private String passwordHash;
 
 //  private boolean isDeleted;
   @Column(updatable = false)

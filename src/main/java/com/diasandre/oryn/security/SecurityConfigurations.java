@@ -40,8 +40,10 @@ public class SecurityConfigurations {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(HttpMethod.POST, "/users/discord/auth").permitAll()
                     .requestMatchers(HttpMethod.POST, "/users/discord/register").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/docs").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/users/auth").permitAll()
                     .requestMatchers(
+                            "docs",
                             "/v3/api-docs",
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
