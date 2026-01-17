@@ -2,7 +2,9 @@ package com.diasandre.oryn.models;
 
 import com.fasterxml.uuid.Generators;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
@@ -11,6 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "proofs")
 @Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 public class Proof {
   @Id
   private UUID id;
