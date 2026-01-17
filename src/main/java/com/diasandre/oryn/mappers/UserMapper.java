@@ -14,11 +14,4 @@ public class UserMapper {
             model.getEmail(), model.getAvatar(),
             model.getCreatedAt(), model.getLastLogin());
   }
-
-  public static User fromUserDetailsDTO(UserSummaryDTO dto, List<Member> members) {
-    return new User(UUID.fromString(dto.id()), dto.discordId(),
-            dto.displayName(), dto.username(),
-            dto.email(), dto.avatar(),
-            dto.createdAt(), dto.lastLogin(), null);
-  }
 }
