@@ -14,7 +14,7 @@ public enum ErrorCode {
   INVALID_START_DATE("Start date must be a past date"),
 
   INVALID_EMAIL("Each user must have a valid email address"),
-
+  EMAIL_EXISTS("E-mail already exists"),
   UNDEFINED("No error code");
 
   private final String defaultMessage;

@@ -13,6 +13,8 @@ import com.diasandre.oryn.dtos.squad.SquadSummaryDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -90,8 +92,8 @@ public class SquadController {
   @PreAuthorize("isAuthenticated() and @securityService.isMemberOf(#squadId, principal)")
   @GetMapping("/{squadId}/invites")
   @Operation(summary = "List all squad invites", tags = {"invites"})
-  public ResponseEntity<List<InviteSummaryDTO>> getSquadInvites(@PathVariable UUID squadId) {
-    var invites = this.inviteService.getSquadInvites(squadId);
+  public ResponseEntity<List<InviteSummaryDTO>> getSquadInvites(@PathVariable UUID squadId, Pageable page) {
+    var invites = this.inviteService.getSquadInvites(squadId, page);
     return ResponseEntity.ok(invites);
   }
 
