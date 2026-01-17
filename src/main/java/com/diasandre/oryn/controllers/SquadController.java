@@ -113,9 +113,8 @@ public class SquadController {
   @GetMapping("/{squadId}/giveaways")
   @Operation(summary = "List squad giveaways", tags = {"giveaways"})
   public ResponseEntity<List<GiveawaySummaryDTO>>
-  getSquadGiveaways(@PathVariable UUID squadId, @RequestParam(required = false) UUID lastId,
-                    @RequestParam(defaultValue = "10") int pageSize) {
-    var list = this.giveawayService.getSquadGiveaways(squadId, lastId, pageSize);
+    getSquadGiveaways(@PathVariable UUID squadId, Pageable pageable) {
+    var list = this.giveawayService.getSquadGiveaways(squadId, pageable);
     return ResponseEntity.ok(list);
   }
 }
