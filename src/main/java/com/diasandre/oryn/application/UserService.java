@@ -37,7 +37,7 @@ public class UserService {
     GetCurrentUserRequest discordUser;
     try {
       discordUser = this.discord.getCurrentUser(token);
-    } catch (Exception _) {
+    } catch (Exception e) {
       System.out.println("Usuário do discord não encontrado.");
       throw new UnauthorizedException("Discord user not found!");
     }
@@ -73,7 +73,7 @@ public class UserService {
     GetCurrentUserRequest discordUser;
     try {
       discordUser = this.discord.getCurrentUser(data.discordToken());
-    } catch (Exception _) {
+    } catch (Exception e) {
       throw new UnauthorizedException("Discord user not found!");
     }
 
