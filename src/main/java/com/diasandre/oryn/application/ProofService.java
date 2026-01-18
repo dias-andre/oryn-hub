@@ -34,7 +34,7 @@ public class ProofService {
     // upload file
     try {
       this.fileStorageService.uploadFile(file, fileKey);
-    } catch (Exception _) {
+    } catch (Exception e) {
       throw new RuntimeException("Failed to load file");
     }
 
