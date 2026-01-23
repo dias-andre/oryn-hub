@@ -1,0 +1,37 @@
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-5.7.1
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: oryn-app
+  name: oryn-app
+spec:
+  containers:
+    - name: oryn-db
+      envFrom:
+        - secretRef:
+            name: oryn-secrets
+      image: docker.io/library/postgres:17
+      ports:
+        - containerPort: 5432
+      volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
+          
+    - name: oryn-api
+      image: localhost/oryn:latest
+      envFrom:
+        - secretRef:
+            name: oryn-secrets
+      ports:
+        - containerPort: 8080
+          hostPort: 8080
+    
+  volumes:
+    - name: db-data
+      hostPath:
+        path: ./db-data
+        type: DirectoryOrCreate
